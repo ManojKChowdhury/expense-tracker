@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:expense_tracker_flutter/database/database_helper.dart';
-import 'package:expense_tracker_flutter/models/transaction.dart';
+import 'package:expense_tracker_flutter/models/transaction.dart' as models;
 import 'package:expense_tracker_flutter/models/budget.dart';
 import 'package:expense_tracker_flutter/models/aggregates.dart';
 
@@ -10,12 +10,12 @@ class ExpenseRepository {
   ExpenseRepository(this._databaseHelper);
 
   // Transaction operations
-  Future<int> insertTransaction(Transaction transaction) async {
+  Future<int> insertTransaction(models.Transaction transaction) async {
     final db = await _databaseHelper.database;
     return await db.insert('transactions', transaction.toMap());
   }
 
-  Future<int> updateTransaction(Transaction transaction) async {
+  Future<int> updateTransaction(models.Transaction transaction) async {
     final db = await _databaseHelper.database;
     return await db.update(
       'transactions',
@@ -34,26 +34,26 @@ class ExpenseRepository {
     );
   }
 
-  Future<List<Transaction>> getAllTransactions() async {
+  Future<List<models.Transaction>> getAllTransactions() async {
     final db = await _databaseHelper.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'transactions',
       orderBy: 'date DESC',
     );
-    return List.generate(maps.length, (i) => Transaction.fromMap(maps[i]));
+    return List.generate(maps.length, (i) => models.Transaction.fromMap(maps[i]));
   }
 
-  Future<List<Transaction>> getRecentTransactions({int limit = 10}) async {
+  Future<List<models.Transaction>> getRecentTransactions({int limit = 10}) async {
     final db = await _databaseHelper.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'transactions',
       orderBy: 'date DESC',
       limit: limit,
     );
-    return List.generate(maps.length, (i) => Transaction.fromMap(maps[i]));
+    return List.generate(maps.length, (i) => models.Transaction.fromMap(maps[i]));
   }
 
-  Future<List<Transaction>> getTransactionsByDateRange(
+  Future<List<models.Transaction>> getTransactionsByDateRange(
     DateTime startDate,
     DateTime endDate,
   ) async {
@@ -67,16 +67,16 @@ class ExpenseRepository {
       ],
       orderBy: 'date DESC',
     );
-    return List.generate(maps.length, (i) => Transaction.fromMap(maps[i]));
+    return List.generate(maps.length, (i) => models.Transaction.fromMap(maps[i]));
   }
 
   Future<double> getTotalByType(
-    TransactionType type,
+    models.TransactionType type,
     DateTime startDate,
     DateTime endDate,
   ) async {
     final db = await _databaseHelper.database;
-    final typeString = type == TransactionType.income ? 'INCOME' : 'EXPENSE';
+    final typeString = type == models.TransactionType.income ? 'INCOME' : 'EXPENSE';
     final result = await db.rawQuery(
       'SELECT SUM(amount) as total FROM transactions WHERE type = ? AND date >= ? AND date <= ?',
       [typeString, startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch],
