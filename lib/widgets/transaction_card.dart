@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:expense_tracker_flutter/models/transaction.dart';
 import 'package:expense_tracker_flutter/theme/app_colors.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:expense_tracker_flutter/providers/settings_provider.dart';
 
 class TransactionCard extends StatelessWidget {
   final Transaction transaction;
@@ -71,16 +73,24 @@ class TransactionCard extends StatelessWidget {
                 ),
               ),
               // Amount
-              Text(
-                transaction.type == TransactionType.income
-                    ? '+\$${transaction.amount.toStringAsFixed(2)}'
-                    : '-\$${transaction.amount.toStringAsFixed(2)}',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: transaction.type == TransactionType.income
-                          ? AppColors.tealAccent
-                          : AppColors.coralAccent,
-                    ),
+              Consumer<SettingsProvider>(
+                builder: (context, settings, child) {
+                  final amountString = settings.hideBalances
+                      ? '****'
+                      : '${settings.currency}${transaction.amount.toStringAsFixed(2)}';
+                      
+                  return Text(
+                    transaction.type == TransactionType.income
+                        ? '+$amountString'
+                        : '-$amountString',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: transaction.type == TransactionType.income
+                              ? AppColors.tealAccent
+                              : AppColors.coralAccent,
+                        ),
+                  );
+                },
               ),
             ],
           ),

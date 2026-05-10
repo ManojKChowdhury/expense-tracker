@@ -69,6 +69,12 @@ class DatabaseHelper {
     ''');
   }
 
+  Future<void> clearAllData() async {
+    final db = await database;
+    await db.execute('DELETE FROM transactions');
+    await db.execute('DELETE FROM budgets');
+  }
+
   Future<void> close() async {
     final db = await database;
     await db.close();

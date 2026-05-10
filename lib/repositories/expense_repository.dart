@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import 'package:expense_tracker_flutter/database/database_helper.dart';
 import 'package:expense_tracker_flutter/models/transaction.dart' as models;
 import 'package:expense_tracker_flutter/models/budget.dart';
@@ -40,17 +39,20 @@ class ExpenseRepository {
       'transactions',
       orderBy: 'date DESC',
     );
-    return List.generate(maps.length, (i) => models.Transaction.fromMap(maps[i]));
+    return List.generate(
+        maps.length, (i) => models.Transaction.fromMap(maps[i]));
   }
 
-  Future<List<models.Transaction>> getRecentTransactions({int limit = 10}) async {
+  Future<List<models.Transaction>> getRecentTransactions(
+      {int limit = 10}) async {
     final db = await _databaseHelper.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'transactions',
       orderBy: 'date DESC',
       limit: limit,
     );
-    return List.generate(maps.length, (i) => models.Transaction.fromMap(maps[i]));
+    return List.generate(
+        maps.length, (i) => models.Transaction.fromMap(maps[i]));
   }
 
   Future<List<models.Transaction>> getTransactionsByDateRange(
@@ -67,7 +69,8 @@ class ExpenseRepository {
       ],
       orderBy: 'date DESC',
     );
-    return List.generate(maps.length, (i) => models.Transaction.fromMap(maps[i]));
+    return List.generate(
+        maps.length, (i) => models.Transaction.fromMap(maps[i]));
   }
 
   Future<double> getTotalByType(
@@ -76,10 +79,15 @@ class ExpenseRepository {
     DateTime endDate,
   ) async {
     final db = await _databaseHelper.database;
-    final typeString = type == models.TransactionType.income ? 'INCOME' : 'EXPENSE';
+    final typeString =
+        type == models.TransactionType.income ? 'INCOME' : 'EXPENSE';
     final result = await db.rawQuery(
       'SELECT SUM(amount) as total FROM transactions WHERE type = ? AND date >= ? AND date <= ?',
-      [typeString, startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch],
+      [
+        typeString,
+        startDate.millisecondsSinceEpoch,
+        endDate.millisecondsSinceEpoch
+      ],
     );
     return result.first['total'] as double? ?? 0.0;
   }
@@ -90,10 +98,10 @@ class ExpenseRepository {
   ) async {
     final db = await _databaseHelper.database;
     final List<Map<String, dynamic>> maps = await db.rawQuery(
-      '''SELECT category, SUM(amount) as total 
-         FROM transactions 
-         WHERE type = 'EXPENSE' AND date >= ? AND date <= ? 
-         GROUP BY category 
+      '''SELECT category, SUM(amount) as total
+         FROM transactions
+         WHERE type = 'EXPENSE' AND date >= ? AND date <= ?
+         GROUP BY category
          ORDER BY total DESC''',
       [startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch],
     );
@@ -106,10 +114,10 @@ class ExpenseRepository {
   ) async {
     final db = await _databaseHelper.database;
     final List<Map<String, dynamic>> maps = await db.rawQuery(
-      '''SELECT date, SUM(amount) as total 
-         FROM transactions 
-         WHERE type = 'EXPENSE' AND date >= ? AND date <= ? 
-         GROUP BY date 
+      '''SELECT date, SUM(amount) as total
+         FROM transactions
+         WHERE type = 'EXPENSE' AND date >= ? AND date <= ?
+         GROUP BY date
          ORDER BY date ASC''',
       [startDate.millisecondsSinceEpoch, endDate.millisecondsSinceEpoch],
     );
@@ -172,8 +180,10 @@ class ExpenseRepository {
   DateRange getThisWeekRange() {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final start = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
-    final end = start.add(const Duration(days: 6, hours: 23, minutes: 59, seconds: 59));
+    final start =
+        DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+    final end =
+        start.add(const Duration(days: 6, hours: 23, minutes: 59, seconds: 59));
     return DateRange(start, end);
   }
 
@@ -181,7 +191,8 @@ class ExpenseRepository {
     final now = DateTime.now();
     final lastMonth = DateTime(now.year, now.month - 1, 1);
     final startOfLastMonth = DateTime(lastMonth.year, lastMonth.month, 1);
-    final endOfLastMonth = DateTime(lastMonth.year, lastMonth.month + 1, 0, 23, 59, 59);
+    final endOfLastMonth =
+        DateTime(lastMonth.year, lastMonth.month + 1, 0, 23, 59, 59);
     return DateRange(startOfLastMonth, endOfLastMonth);
   }
 }

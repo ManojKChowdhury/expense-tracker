@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker_flutter/screens/home/home_screen.dart';
 import 'package:expense_tracker_flutter/screens/reports/reports_screen.dart';
+import 'package:expense_tracker_flutter/screens/budget/budget_screen.dart';
+import 'package:expense_tracker_flutter/screens/settings/settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -15,7 +17,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = const [
     HomeScreen(),
     ReportsScreen(),
-    BudgetPlaceholderScreen(),
+    BudgetScreen(),
+    SettingsScreen(),
   ];
 
   @override
@@ -42,24 +45,13 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.account_balance_wallet),
             label: 'Budget',
           ),
+          NavigationDestination(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
         ],
       ),
     );
   }
 }
 
-class BudgetPlaceholderScreen extends StatelessWidget {
-  const BudgetPlaceholderScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Budget Management'),
-      ),
-      body: const Center(
-        child: Text('Budget Management - Coming Soon'),
-      ),
-    );
-  }
-}

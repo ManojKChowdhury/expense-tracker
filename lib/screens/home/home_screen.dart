@@ -5,6 +5,7 @@ import 'package:expense_tracker_flutter/widgets/transaction_card.dart';
 import 'package:expense_tracker_flutter/widgets/budget_progress_bar.dart';
 import 'package:expense_tracker_flutter/theme/app_colors.dart';
 import 'package:expense_tracker_flutter/screens/add_expense/add_expense_screen.dart';
+import 'package:expense_tracker_flutter/providers/settings_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -33,6 +34,7 @@ class HomeScreen extends StatelessWidget {
       body: Consumer<HomeProvider>(
         builder: (context, provider, child) {
           final uiState = provider.uiState;
+          final settings = context.watch<SettingsProvider>();
 
           if (uiState.isLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -71,7 +73,9 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '\$${(uiState.totalIncome - uiState.totalSpent).toStringAsFixed(2)}',
+                          settings.hideBalances
+                              ? '****'
+                              : '${settings.currency}${(uiState.totalIncome - uiState.totalSpent).toStringAsFixed(2)}',
                           style:
                               Theme.of(context).textTheme.displaySmall?.copyWith(
                                     fontWeight: FontWeight.bold,
@@ -95,7 +99,9 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                 ),
                                 Text(
-                                  '\$${uiState.totalIncome.toStringAsFixed(2)}',
+                                  settings.hideBalances
+                                      ? '****'
+                                      : '${settings.currency}${uiState.totalIncome.toStringAsFixed(2)}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleLarge
@@ -119,7 +125,9 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                 ),
                                 Text(
-                                  '\$${uiState.totalSpent.toStringAsFixed(2)}',
+                                  settings.hideBalances
+                                      ? '****'
+                                      : '${settings.currency}${uiState.totalSpent.toStringAsFixed(2)}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleLarge
@@ -154,7 +162,9 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '\$${uiState.todaySpent.toStringAsFixed(2)}',
+                          settings.hideBalances
+                              ? '****'
+                              : '${settings.currency}${uiState.todaySpent.toStringAsFixed(2)}',
                           style:
                               Theme.of(context).textTheme.headlineMedium?.copyWith(
                                     fontWeight: FontWeight.bold,

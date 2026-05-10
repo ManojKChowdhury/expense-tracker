@@ -31,7 +31,7 @@ class CategoryIcon extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              _getCategoryIcon(category),
+              getIcon(category),
               color: isSelected ? Colors.white : color,
               size: 28,
             ),
@@ -50,7 +50,7 @@ class CategoryIcon extends StatelessWidget {
     );
   }
 
-  IconData _getCategoryIcon(String category) {
+  static IconData getIcon(String category) {
     switch (category.toLowerCase()) {
       case 'food':
         return Icons.restaurant;

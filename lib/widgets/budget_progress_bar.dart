@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker_flutter/theme/app_colors.dart';
+import 'package:provider/provider.dart';
+import 'package:expense_tracker_flutter/providers/settings_provider.dart';
 
 class BudgetProgressBar extends StatelessWidget {
   final double spent;
@@ -15,6 +17,8 @@ class BudgetProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final progress = budget > 0 ? (spent / budget).clamp(0.0, 1.0) : 0.0;
     final isOverBudget = spent > budget;
+
+    final settings = context.watch<SettingsProvider>();
 
     return Column(
       children: [
@@ -36,11 +40,15 @@ class BudgetProgressBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Spent: \$${spent.toStringAsFixed(2)}',
+              settings.hideBalances
+                  ? 'Spent: ****'
+                  : 'Spent: ${settings.currency}${spent.toStringAsFixed(2)}',
               style: Theme.of(context).textTheme.bodySmall,
             ),
             Text(
-              'Budget: \$${budget.toStringAsFixed(2)}',
+              settings.hideBalances
+                  ? 'Budget: ****'
+                  : 'Budget: ${settings.currency}${budget.toStringAsFixed(2)}',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
