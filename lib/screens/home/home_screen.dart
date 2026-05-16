@@ -6,7 +6,8 @@ import 'package:expense_tracker_flutter/widgets/budget_progress_bar.dart';
 import 'package:expense_tracker_flutter/theme/app_colors.dart';
 import 'package:expense_tracker_flutter/screens/add_expense/add_expense_screen.dart';
 import 'package:expense_tracker_flutter/providers/settings_provider.dart';
-
+import 'package:expense_tracker_flutter/providers/gamification_provider.dart';
+import 'package:expense_tracker_flutter/screens/profile/profile_screen.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -18,6 +19,39 @@ class HomeScreen extends StatelessWidget {
           'Home',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          Consumer<GamificationProvider>(
+            builder: (context, gamification, child) {
+              return Row(
+                children: [
+                  if (gamification.stats.currentStreak > 0)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        children: [
+                          const Text('🔥', style: TextStyle(fontSize: 18)),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${gamification.stats.currentStreak}',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  IconButton(
+                    icon: const Icon(Icons.emoji_events), // Trophey or profile
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {

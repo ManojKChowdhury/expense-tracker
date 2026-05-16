@@ -5,6 +5,8 @@ import 'package:expense_tracker_flutter/models/transaction.dart';
 import 'package:expense_tracker_flutter/widgets/category_icon.dart';
 import 'package:expense_tracker_flutter/theme/app_colors.dart';
 import 'package:intl/intl.dart';
+import 'package:expense_tracker_flutter/providers/gamification_provider.dart';
+import 'package:expense_tracker_flutter/providers/settings_provider.dart';
 
 class AddExpenseScreen extends StatelessWidget {
   const AddExpenseScreen({Key? key}) : super(key: key);
@@ -103,7 +105,7 @@ class AddExpenseScreen extends StatelessWidget {
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Amount',
-                    prefixText: '\$ ',
+                    prefixText: '${context.watch<SettingsProvider>().currency} ',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -210,6 +212,9 @@ class AddExpenseScreen extends StatelessWidget {
                       ? () async {
                           final success = await provider.saveTransaction();
                           if (success && context.mounted) {
+                            if (uiState.selectedType == TransactionType.expense) {
+                              context.read<GamificationProvider>().logExpenseAction(double.tryParse(uiState.amount) ?? 0.0);
+                            }
                             Navigator.pop(context, true);
                           }
                         }

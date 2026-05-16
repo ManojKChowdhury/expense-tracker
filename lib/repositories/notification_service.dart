@@ -36,13 +36,13 @@ class NotificationService {
     );
   }
 
-  Future<void> scheduleDailyReminder(int hour, int minute) async {
+  Future<void> scheduleDailyReminder(int hour, int minute, {String? title, String? body}) async {
     await flutterLocalNotificationsPlugin.cancelAll();
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id: 0,
-      title: 'Log Your Expenses',
-      body: 'Don\'t forget to log your daily expenses!',
+      title: title ?? 'Log Your Expenses',
+      body: body ?? 'Don\'t forget to log your daily expenses!',
       scheduledDate: _nextInstanceOfTime(hour, minute),
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(

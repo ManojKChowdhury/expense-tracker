@@ -24,8 +24,9 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -67,12 +68,54 @@ class DatabaseHelper {
     await db.execute('''
       CREATE INDEX idx_budgets_month_year ON budgets(month, year)
     ''');
+
+    // Call onUpgrade manually for version 1 to 2 creation during fresh install
+    if (version >= 2) {
+      await _createGamificationTables(db);
+      await _seedGamificationData(db);
+    }
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await _createGamificationTables(db);
+      await _seedGamificationData(db);
+    }
+  }
+
+  Future<void> _createGamificationTables(Database db) async {
+    await db.execute('''
+      CREATE TABLE gamification_stats (
+        id INTEGER PRIMARY KEY CHECK (id = 1), -- Ensure only one row exists
+        points INTEGER NOT NULL DEFAULT 0,
+        current_streak INTEGER NOT NULL DEFAULT 0,
+        best_streak INTEGER NOT NULL DEFAULT 0,
+        last_log_date INTEGER,
+        current_avatar TEXT
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE user_badges (
+        badge_id TEXT PRIMARY KEY,
+        unlocked_at INTEGER NOT NULL
+      )
+    ''');
+  }
+
+  Future<void> _seedGamificationData(Database db) async {
+    await db.execute('''
+      INSERT OR IGNORE INTO gamification_stats (id, points, current_streak, best_streak)
+      VALUES (1, 0, 0, 0)
+    ''');
   }
 
   Future<void> clearAllData() async {
     final db = await database;
     await db.execute('DELETE FROM transactions');
     await db.execute('DELETE FROM budgets');
+    await db.execute('DELETE FROM user_badges');
+    await db.execute('UPDATE gamification_stats SET points = 0, current_streak = 0, best_streak = 0, last_log_date = NULL, current_avatar = NULL WHERE id = 1');
   }
 
   Future<void> close() async {

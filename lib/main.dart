@@ -12,7 +12,7 @@ import 'package:expense_tracker_flutter/providers/settings_provider.dart';
 import 'package:expense_tracker_flutter/repositories/data_management_service.dart';
 import 'package:expense_tracker_flutter/screens/app_lock_wrapper.dart';
 import 'package:expense_tracker_flutter/repositories/notification_service.dart';
-
+import 'package:expense_tracker_flutter/providers/gamification_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
@@ -58,6 +58,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => SettingsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => GamificationProvider(),
         ),
       ],
       child: Consumer<SettingsProvider>(

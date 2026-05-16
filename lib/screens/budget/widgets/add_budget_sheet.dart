@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:expense_tracker_flutter/providers/budget_provider.dart';
+import 'package:expense_tracker_flutter/providers/settings_provider.dart';
 import 'package:expense_tracker_flutter/widgets/category_icon.dart';
 import 'package:expense_tracker_flutter/theme/app_colors.dart';
 
@@ -94,11 +95,11 @@ class _AddBudgetSheetState extends State<AddBudgetSheet> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _amountController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Budget Amount',
-                border: OutlineInputBorder(),
-                prefixText: '\$ ',
-                prefixIcon: Icon(Icons.attach_money),
+                border: const OutlineInputBorder(),
+                prefixText: '${context.watch<SettingsProvider>().currency} ',
+                prefixIcon: const Icon(Icons.attach_money),
               ),
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               validator: (value) {
