@@ -1,0 +1,8 @@
+# Setup release signing details here.
+# Copy this file to 'key.properties' in the same directory and fill out the values.
+# ⚠️ WARNING: Never commit key.properties or the keystore (.jks) file to source control.
+
+storePassword=YOUR_KEYSTORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=upload
+storeFile=../app/upload-keystore.jks
